@@ -1,0 +1,14 @@
+{
+  "name": "ts-esn-types",
+  "version": "0.1.0",
+  "description": "Shared TypeScript type definitions for the ESN platform",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --project tsconfig.json"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
