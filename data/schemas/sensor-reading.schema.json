@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://esn.purestreet.io/schemas/sensor-reading.schema.json",
+  "title": "ESN Sensor Reading",
+  "description": "Schema defining a sensor telemetry observation captured by a field node.",
+  "type": "object",
+  "required": ["reading_id", "node_id", "captured_at"],
+  "properties": {
+    "reading_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the sensor reading."
+    },
+    "node_id": {
+      "type": "string",
+      "description": "Identifier of the sentinel node where the reading was captured."
+    },
+    "temperature_c": {
+      "type": ["number", "null"],
+      "description": "Ambient temperature in degrees Celsius."
+    },
+    "pm25_ug_m3": {
+      "type": ["number", "null"],
+      "description": "Fine particulate matter (PM2.5) concentration in micrograms per cubic metre."
+    },
+    "no2_ppb": {
+      "type": ["number", "null"],
+      "description": "Nitrogen dioxide concentration in parts per billion."
+    },
+    "noise_db": {
+      "type": ["number", "null"],
+      "description": "Noise level in decibels."
+    },
+    "humidity_pct": {
+      "type": ["number", "null"],
+      "description": "Relative humidity percentage."
+    },
+    "captured_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the sensor reading was recorded."
+    }
+  },
+  "additionalProperties": false
+}

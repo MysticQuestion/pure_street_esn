@@ -1,0 +1,17 @@
+{
+  "name": "esn-mobile",
+  "slug": "esn-mobile",
+  "version": "0.1.0",
+  "sdkVersion": "50.0.0",
+  "platforms": ["ios", "android"],
+  "orientation": "portrait",
+  "icon": "./assets/icon.png",
+  "splash": {
+    "image": "./assets/splash.png",
+    "resizeMode": "contain",
+    "backgroundColor": "#ffffff"
+  },
+  "updates": {
+    "fallbackToCacheTimeout": 0
+  }
+}

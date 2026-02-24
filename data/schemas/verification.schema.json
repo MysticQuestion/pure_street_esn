@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://esn.purestreet.io/schemas/verification.schema.json",
+  "title": "ESN Verification Record",
+  "description": "Schema defining a verification action performed on a hazard report.",
+  "type": "object",
+  "required": ["verification_id", "report_id", "verified_at", "status"],
+  "properties": {
+    "verification_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the verification record."
+    },
+    "report_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Identifier of the hazard report being verified."
+    },
+    "verifier_id": {
+      "type": ["string", "null"],
+      "format": "uuid",
+      "description": "Identifier of the user or system performing the verification. May be null for automated verification."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["auto_verified", "verified", "rejected", "duplicate_merged"],
+      "description": "Outcome of the verification process."
+    },
+    "confidence": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Confidence level assigned during verification."
+    },
+    "comments": {
+      "type": ["string", "null"],
+      "maxLength": 2000,
+      "description": "Optional moderator comments or notes about the verification decision."
+    },
+    "verified_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the verification was completed."
+    }
+  },
+  "additionalProperties": false
+}

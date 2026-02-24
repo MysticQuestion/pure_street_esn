@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://esn.purestreet.io/schemas/corridor-score.schema.json",
+  "title": "ESN Corridor Score",
+  "description": "Schema defining a computed sanitation score for a city corridor.",
+  "type": "object",
+  "required": ["corridor_id", "score", "grade", "computed_at"],
+  "properties": {
+    "corridor_id": {
+      "type": "string",
+      "description": "Unique identifier for the corridor (e.g. OAK-INT-FRUITVALE-01)."
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Composite sanitation score on a 0–100 scale. 100 represents pristine conditions."
+    },
+    "grade": {
+      "type": "string",
+      "enum": ["A", "B", "C", "D", "F"],
+      "description": "Letter grade derived from the numeric score."
+    },
+    "trend": {
+      "type": ["string", "null"],
+      "enum": ["improving", "stable", "declining", null],
+      "description": "Optional qualitative trend indicator relative to previous periods."
+    },
+    "details": {
+      "type": ["object", "null"],
+      "description": "Additional breakdown of scores by hazard category or time period."
+    },
+    "computed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the score was computed."
+    }
+  },
+  "additionalProperties": false
+}

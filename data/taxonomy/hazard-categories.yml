@@ -1,0 +1,180 @@
+---
+version: 1.0.0
+namespace: esn.purestreet.io
+last_updated: "2026-02-23"
+description: >-
+  Canonical hazard taxonomy for ESN-Lite and ESN. Used by reporting UI,
+  verification workflows, scoring engine, routing rules and analytics. Each
+  category includes metadata that informs severity weighting, default
+  priorities, service level agreements (SLA) and routing profiles.
+
+categories:
+  - id: BIO_01
+    code: biohazard_sharps_or_waste
+    label: "Biohazard (Sharps / Human Waste / Bloodborne Risk)"
+    description: >-
+      Hazard involving sharps, human waste, visible blood, or materials that may
+      pose direct biological exposure risk. These incidents require rapid
+      response to protect public health.
+    default_priority: CRITICAL
+    base_severity: 5
+    severity_weight: 1.35
+    sla_target_hours: 4
+    reportable_by_public: true
+    requires_photo: true
+    requires_location: true
+    verification_rules:
+      exif_recency_required: true
+      duplicate_radius_meters: 25
+      moderator_review_if_trust_score_below: 0.45
+    routing_profiles:
+      - purestreet_crew
+      - municipal_sanitation
+      - public_health_partner
+    tags:
+      - needle
+      - syringe
+      - human_waste
+      - blood
+      - bodily_fluids
+      - contamination
+
+  - id: DUMP_01
+    code: illegal_dumping_bulk
+    label: "Illegal Dumping (Bulk Items)"
+    description: >-
+      Furniture, mattresses, appliances, tires, construction debris, and large
+      dumped waste that obstructs sidewalks or degrades corridor conditions.
+    default_priority: HIGH
+    base_severity: 4
+    severity_weight: 1.15
+    sla_target_hours: 24
+    reportable_by_public: true
+    requires_photo: true
+    requires_location: true
+    verification_rules:
+      exif_recency_required: true
+      duplicate_radius_meters: 40
+      moderator_review_if_trust_score_below: 0.35
+    routing_profiles:
+      - purestreet_crew
+      - municipal_public_works
+      - bid_partner
+    tags:
+      - mattress
+      - sofa
+      - tires
+      - appliance
+      - debris
+      - dumping
+
+  - id: HAZ_01
+    code: chemical_or_hazardous_material
+    label: "Chemical / Hazardous Material"
+    description: >-
+      Possible oils, solvents, batteries, paints, e-waste leakage, or other
+      materials requiring specialised handling. These hazards may necessitate
+      involvement of hazmat partners.
+    default_priority: CRITICAL
+    base_severity: 5
+    severity_weight: 1.40
+    sla_target_hours: 2
+    reportable_by_public: true
+    requires_photo: true
+    requires_location: true
+    verification_rules:
+      exif_recency_required: true
+      duplicate_radius_meters: 20
+      moderator_review_if_trust_score_below: 0.50
+    routing_profiles:
+      - hazmat_partner
+      - municipal_public_works
+      - purestreet_supervisor
+    tags:
+      - oil_spill
+      - solvent
+      - paint
+      - battery
+      - chemical
+      - e_waste
+
+  - id: INFRA_01
+    code: infrastructure_decay
+    label: "Infrastructure Decay / Obstruction"
+    description: >-
+      Broken signage, damaged sidewalks, potholes, curb issues, lighting
+      failure, or public-space infrastructure degradation affecting safety and
+      access. These incidents often require coordination with municipal
+      maintenance crews.
+    default_priority: MEDIUM
+    base_severity: 2
+    severity_weight: 0.90
+    sla_target_hours: 168
+    reportable_by_public: true
+    requires_photo: true
+    requires_location: true
+    verification_rules:
+      exif_recency_required: false
+      duplicate_radius_meters: 50
+      moderator_review_if_trust_score_below: 0.30
+    routing_profiles:
+      - municipal_public_works
+      - bid_partner
+    tags:
+      - pothole
+      - broken_sign
+      - sidewalk_damage
+      - curb
+      - lighting
+      - obstruction
+
+  - id: AESTH_01
+    code: urban_blight_aesthetic
+    label: "Urban Blight (Aesthetic / Low‑Risk Litter)"
+    description: >-
+      Litter, weeds and non‑urgent blight indicators that still contribute to
+      corridor decline and sanitation score deterioration. Addressing these
+      issues improves the perceived cleanliness of the corridor.
+    default_priority: LOW
+    base_severity: 1
+    severity_weight: 0.50
+    sla_target_hours: 336
+    reportable_by_public: true
+    requires_photo: true
+    requires_location: true
+    verification_rules:
+      exif_recency_required: false
+      duplicate_radius_meters: 30
+      moderator_review_if_trust_score_below: 0.20
+    routing_profiles:
+      - purestreet_crew
+      - bid_partner
+    tags:
+      - litter
+      - weeds
+      - graffiti
+      - debris_small
+      - blight
+
+context_modifiers:
+  proximity_to_school:
+    description: "Hazard located within threshold distance of a school."
+    multiplier: 1.20
+    threshold_meters: 150
+
+  proximity_to_waterway:
+    description: "Hazard located near storm drains, creeks or waterways."
+    multiplier: 1.25
+    threshold_meters: 100
+
+  ada_pathway_obstruction:
+    description: "Hazard obstructs wheelchair or mobility path."
+    multiplier: 1.30
+
+  repeat_occurrence_30d:
+    description: "Same category recurs in same corridor within 30 days."
+    multiplier: 1.15
+
+  night_visibility_risk:
+    description: "Hazard in low‑light corridor segment with safety implications."
+    multiplier: 1.10

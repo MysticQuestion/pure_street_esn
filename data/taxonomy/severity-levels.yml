@@ -1,0 +1,40 @@
+---
+version: 1.0.0
+namespace: esn.purestreet.io
+last_updated: "2026-02-23"
+description: >-
+  Severity level definitions for ESN reports and scoring. These levels are
+  referenced by the hazard taxonomy and scoring functions and provide a
+  consistent interpretation of risk magnitude.
+
+levels:
+  - id: LOW
+    label: "Low"
+    description: >-
+      Minor aesthetic issues or nuisances that do not pose immediate health
+      or safety risks. Examples include small amounts of litter or graffiti.
+    numeric_value: 1
+
+  - id: MEDIUM
+    label: "Medium"
+    description: >-
+      Conditions that could worsen if left unaddressed but are not currently
+      hazardous. Examples include infrastructure wear, moderate dumping or
+      blocked pathways.
+    numeric_value: 2
+
+  - id: HIGH
+    label: "High"
+    description: >-
+      Situations requiring prompt attention due to potential safety or public
+      health implications. Examples include large illegal dumping or
+      partially obstructed emergency access.
+    numeric_value: 4
+
+  - id: CRITICAL
+    label: "Critical"
+    description: >-
+      Severe hazards requiring immediate response to protect human health and
+      safety. Examples include chemical spills, biohazards or infrastructure
+      failures that could cause injury.
+    numeric_value: 5

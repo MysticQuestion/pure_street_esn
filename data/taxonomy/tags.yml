@@ -1,0 +1,39 @@
+---
+version: 1.0.0
+namespace: esn.purestreet.io
+last_updated: "2026-02-23"
+description: >-
+  Reusable tags for hazard reports. Tags enable fine‑grained filtering,
+  searching and analytics across categories. They may be used to capture
+  additional attributes such as materials present or environmental context.
+
+tags:
+  needle: "Syringe or hypodermic needle present"
+  syringe: "Any type of syringe without a needle"
+  human_waste: "Human excrement or bodily waste"
+  blood: "Visible blood or blood‑stained materials"
+  bodily_fluids: "Other bodily fluids (e.g. vomit)"
+  contamination: "General biological contamination"
+  mattress: "Discarded mattress"
+  sofa: "Discarded sofa or couch"
+  tires: "Abandoned tires"
+  appliance: "Abandoned appliance such as fridge, TV or washer"
+  debris: "General bulky debris not otherwise categorised"
+  dumping: "Evidence of illegal dumping"
+  oil_spill: "Oil or lubricant spill"
+  solvent: "Chemical solvent present"
+  paint: "Paint containers or paint spill"
+  battery: "Batteries including car or household types"
+  chemical: "Unidentified chemical substances"
+  e_waste: "Electronic waste including devices or components"
+  pothole: "Road or path pothole"
+  broken_sign: "Broken or missing sign"
+  sidewalk_damage: "Cracked or damaged sidewalk"
+  curb: "Damaged or missing curb"
+  lighting: "Malfunctioning or missing lighting"
+  obstruction: "Physical obstruction in walkway or roadway"
+  litter: "General litter including small trash items"
+  weeds: "Overgrown weeds or vegetation"
+  graffiti: "Graffiti or tagging"
+  debris_small: "Small debris not otherwise specified"
+  blight: "General signs of urban blight"
