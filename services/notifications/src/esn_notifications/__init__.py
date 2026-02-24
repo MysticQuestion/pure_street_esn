@@ -1,0 +1,1 @@
+"""ESN notifications package (placeholder)."""

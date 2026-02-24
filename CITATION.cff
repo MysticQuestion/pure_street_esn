@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Environmental Sentinel Network (ESN)"
+authors:
+  - family-names: Wilson
+    given-names: "Eric-Michael"
+    orcid: "https://orcid.org/0000-0000-0000-0000"
+date-released: 2026-02-24
+version: 0.1.0
+abstract: |
+  The Environmental Sentinel Network (ESN) is a civic‑technology platform developed under Pure Street to transform urban environmental neglect into structured, geo‑verified data.  ESN provides verification‑driven intelligence and response coordination for municipal sanitation, environmental justice, and research.
