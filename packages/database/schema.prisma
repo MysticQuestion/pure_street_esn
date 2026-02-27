@@ -1,0 +1,462 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/**
+ * HYBRID STRICT MODE:
+ * - Prisma owns core civic entities + governance + operations
+ * - Python (SQLAlchemy/Alembic) owns timeseries + ML registry
+ *
+ * Python-owned tables (NOT in Prisma):
+ *   sensor_readings, sensor_events,
+ *   models, model_runs, predictions
+ */
+
+model Tenant {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  name        String
+  tenantType  TenantType
+  isActive    Boolean  @default(true)
+  timezone    String?
+  region      String?
+  meta        Json?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  memberships Membership[]
+  apiKeys     ApiKey[]
+
+  corridors   Corridor[]
+  blocks      Block[]
+  sensors     Sensor[]
+  reports     Report[]
+  workOrders  WorkOrder[]
+  auditLogs   AuditLog[]
+  slas        SLAConfig[]
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String?  @unique
+  phone       String?  @unique
+  displayName String?
+  avatarUrl   String?
+  isActive    Boolean  @default(true)
+
+  reputation  Int      @default(0)
+  trustScore  Float    @default(0.5)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  memberships Membership[]
+  reports     Report[]
+  workEvents  WorkEvent[]
+  auditLogs   AuditLog[]
+}
+
+model Membership {
+  id        String   @id @default(uuid())
+  tenantId  String
+  userId    String
+  role      Role
+  isActive  Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, userId])
+  @@index([tenantId, role])
+}
+
+model ApiKey {
+  id          String   @id @default(uuid())
+  tenantId    String
+  name        String
+  keyHash     String   @unique
+  scopes      String[]
+  isActive    Boolean  @default(true)
+  expiresAt   DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, isActive])
+}
+
+model Corridor {
+  id              String   @id @default(uuid())
+  tenantId        String
+  code            String
+  name            String
+
+  boundaryGeoJson Json?
+  boundaryGeom    Unsupported("geometry")?
+
+  riskBand        RiskBand @default(LOW)
+  scoreCurrent    Float    @default(100)
+  trend           Trend    @default(STABLE)
+  lastComputedAt  DateTime?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  blocks          Block[]
+  reports         Report[]
+  corridorScores  CorridorScore[]
+  slas            SLAConfig[]
+  workOrders      WorkOrder[]
+  economicPoints  EconomicIndicator[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId, riskBand])
+  @@index([tenantId, lastComputedAt])
+}
+
+model Block {
+  id              String   @id @default(uuid())
+  tenantId        String
+  corridorId      String?
+  code            String
+  name            String?
+
+  centerLat       Float?
+  centerLng       Float?
+  boundaryGeoJson Json?
+  boundaryGeom    Unsupported("geometry")?
+
+  cleanScore      Float    @default(100)
+  ehiScore        Float    @default(100)
+  trend           Trend    @default(STABLE)
+  lastComputedAt  DateTime?
+
+  isSchoolZone    Boolean  @default(false)
+  equityZone      String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  corridor        Corridor?@relation(fields: [corridorId], references: [id], onDelete: SetNull)
+
+  reports         Report[]
+  blockScores     BlockScore[]
+  economicPoints  EconomicIndicator[]
+  workOrders      WorkOrder[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId, corridorId])
+  @@index([tenantId, lastComputedAt])
+}
+
+model Sensor {
+  id           String   @id @default(uuid())
+  tenantId     String
+  corridorId   String?
+  blockId      String?
+
+  name         String?
+  sensorType   SensorType
+  vendor       String?
+  model        String?
+  serial       String?
+  isActive     Boolean  @default(true)
+
+  lat          Float?
+  lng          Float?
+  location     Json?
+  locationGeom Unsupported("geometry")?
+
+  ingestMethod SensorIngestMethod @default(API_PULL)
+  ingestConfig Json?
+
+  installedAt  DateTime @default(now())
+  lastSeenAt   DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  corridor     Corridor?@relation(fields: [corridorId], references: [id], onDelete: SetNull)
+  block        Block?   @relation(fields: [blockId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, sensorType, isActive])
+  @@index([tenantId, corridorId])
+  @@index([tenantId, blockId])
+}
+
+model Report {
+  id                 String     @id @default(uuid())
+  tenantId           String
+  reporterUserId     String?
+  source             ReportSource
+  sourceRef          String?
+  category           HazardCategory
+  subcategory        String?
+  severity           Int
+  description        String?
+
+  lat                Float
+  lng                Float
+  blockId            String?
+  corridorId         String?
+
+  photoUrl           String?
+  mediaMeta          Json?
+
+  verificationStatus VerificationStatus @default(PENDING)
+  verificationConfidence Float?
+  duplicateOfReportId String?
+  verifiedAt          DateTime?
+  verifiedByUserId    String?
+
+  status             ReportStatus @default(OPEN)
+  observedAt         DateTime
+  submittedAt        DateTime @default(now())
+  resolvedAt         DateTime?
+  resolutionNote     String?
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  tenant             Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  reporter           User?    @relation("ReporterReports", fields: [reporterUserId], references: [id], onDelete: SetNull)
+  verifier           User?    @relation("VerifierReports", fields: [verifiedByUserId], references: [id], onDelete: SetNull)
+
+  block              Block?   @relation(fields: [blockId], references: [id], onDelete: SetNull)
+  corridor           Corridor?@relation(fields: [corridorId], references: [id], onDelete: SetNull)
+
+  duplicateOf        Report?  @relation("ReportDuplicates", fields: [duplicateOfReportId], references: [id], onDelete: SetNull)
+  duplicates         Report[] @relation("ReportDuplicates")
+
+  workOrders         WorkOrder[]
+
+  @@index([tenantId, status, submittedAt])
+  @@index([tenantId, verificationStatus, submittedAt])
+  @@index([tenantId, corridorId, submittedAt])
+  @@index([tenantId, blockId, submittedAt])
+  @@index([tenantId, category, submittedAt])
+}
+
+model BlockScore {
+  id         String   @id @default(uuid())
+  tenantId   String
+  blockId    String
+
+  cleanScore Float
+  ehiScore   Float
+  trend      Trend
+  computedAt DateTime @default(now())
+
+  factors    Json?
+
+  tenant     Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  block      Block  @relation(fields: [blockId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, blockId, computedAt])
+}
+
+model CorridorScore {
+  id         String   @id @default(uuid())
+  tenantId   String
+  corridorId String
+
+  score      Float
+  riskBand   RiskBand
+  trend      Trend
+  computedAt DateTime @default(now())
+  factors    Json?
+
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  corridor   Corridor @relation(fields: [corridorId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, corridorId, computedAt])
+}
+
+model EconomicIndicator {
+  id         String   @id @default(uuid())
+  tenantId   String
+  corridorId String?
+  blockId    String?
+
+  recordedAt DateTime @default(now())
+  metric     EconomicMetric
+  value      Float
+  unit       String?
+  source     String?
+  meta       Json?
+
+  createdAt  DateTime @default(now())
+
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  corridor   Corridor?@relation(fields: [corridorId], references: [id], onDelete: SetNull)
+  block      Block?   @relation(fields: [blockId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, metric, recordedAt])
+  @@index([tenantId, corridorId, recordedAt])
+  @@index([tenantId, blockId, recordedAt])
+}
+
+model WorkOrder {
+  id          String   @id @default(uuid())
+  tenantId    String
+  corridorId  String?
+  blockId     String?
+  reportId    String?
+
+  title       String
+  description String?
+  priority    WorkPriority @default(MEDIUM)
+  status      WorkStatus   @default(NEW)
+
+  slaConfigId String?
+
+  scheduledFor DateTime?
+  startedAt    DateTime?
+  completedAt  DateTime?
+
+  outcome      Json?
+  costEstimate Float?
+  costActual   Float?
+  laborMinutes Int?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant     Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  corridor   Corridor? @relation(fields: [corridorId], references: [id], onDelete: SetNull)
+  block      Block?    @relation(fields: [blockId], references: [id], onDelete: SetNull)
+  report     Report?   @relation(fields: [reportId], references: [id], onDelete: SetNull)
+
+  slaConfig  SLAConfig? @relation(fields: [slaConfigId], references: [id], onDelete: SetNull)
+
+  events     WorkEvent[]
+
+  @@index([tenantId, status, createdAt])
+  @@index([tenantId, priority, createdAt])
+  @@index([tenantId, corridorId])
+  @@index([tenantId, blockId])
+}
+
+model WorkEvent {
+  id          String   @id @default(uuid())
+  tenantId    String
+  workOrderId String
+  userId      String?
+
+  eventAt     DateTime @default(now())
+  eventType   String
+  note        String?
+  meta        Json?
+
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  workOrder   WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, workOrderId, eventAt])
+}
+
+model SLAConfig {
+  id          String   @id @default(uuid())
+  tenantId    String
+  corridorId  String?
+
+  name        String
+  targetHours Int
+  appliesTo   HazardCategory?
+  minSeverity Int?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  corridor    Corridor? @relation(fields: [corridorId], references: [id], onDelete: SetNull)
+
+  workOrders  WorkOrder[]
+
+  @@index([tenantId, corridorId])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  tenantId    String
+  actorUserId String?
+  action      String
+  entityType  String?
+  entityId    String?
+  ip          String?
+  userAgent   String?
+  meta        Json?
+
+  createdAt   DateTime @default(now())
+
+  tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  actor       User?  @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, createdAt])
+  @@index([tenantId, action, createdAt])
+}
+
+// Enums
+enum TenantType { CITY BID COUNTY NGO PRIVATE_PARTNER }
+enum Role { RESIDENT CREW MUNICIPAL BID_ANALYST ADMIN }
+
+enum ReportSource { RESIDENT CREW PARTNER SENSOR IMPORTED_311 IMPORTED_OPEN_DATA }
+enum ReportStatus { OPEN INVESTIGATING IN_PROGRESS RESOLVED DISMISSED }
+enum VerificationStatus { PENDING AUTO_VERIFIED HUMAN_VERIFIED REJECTED DUPLICATE }
+
+enum HazardCategory {
+  ILLEGAL_DUMPING
+  GRAFFITI
+  BIOHAZARD
+  SHARPS
+  HOMELESS_ENCAMPMENT
+  STORM_DRAIN
+  INFRA_DAMAGE
+  DEAD_ANIMAL
+  OTHER
+}
+
+enum RiskBand { LOW MODERATE HIGH SEVERE }
+enum Trend { IMPROVING STABLE DECLINING }
+
+enum SensorType {
+  AIR_QUALITY
+  NOISE
+  TEMPERATURE
+  HUMIDITY
+  CAMERA
+  SMART_BIN
+  WATER_QUALITY
+  TRAFFIC_COUNTER
+}
+
+enum SensorIngestMethod { API_PULL WEBHOOK FILE_DROP MANUAL }
+
+enum EconomicMetric {
+  PROPERTY_VALUE
+  VACANCY_RATE
+  BUSINESS_DENSITY
+  FOOT_TRAFFIC_INDEX
+  SALES_PROXY_INDEX
+  RENT_INDEX
+  PERMITS_ACTIVITY
+  CRIME_PROXY_INDEX
+  TRANSIT_RIDERSHIP
+}
+
+enum WorkPriority { LOW MEDIUM HIGH CRITICAL }
+enum WorkStatus { NEW ASSIGNED SCHEDULED IN_PROGRESS BLOCKED COMPLETED CANCELLED }
