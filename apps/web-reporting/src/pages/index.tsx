@@ -1,19 +1,15 @@
-import React from 'react';
-
 export default function Home() {
   return (
-    <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>ESN Web Reporting</h1>
+    <main style={{ fontFamily: 'sans-serif', padding: 24, maxWidth: 840, margin: '0 auto' }}>
+      <h1>STREETS ESN Reporting</h1>
+      <h2>Report by Text, Voice, or Web</h2>
       <p>
-        Use this web interface to submit environmental hazard reports when you’re away from the
-        mobile app.  This client is a proof of concept and shares the same API endpoints as the
-        mobile application.
+        STREETS is being built so residents can report public-space hazards by web form, SMS/MMS, WhatsApp,
+        and voice. Reports are organized into a civic intelligence loop: report, verify, prioritize, route,
+        measure, publish, and improve.
       </p>
-      <p>
-        For more information on data requirements, see the
-        <a href="../../docs/03-data-and-models/hazard-taxonomy.md"> hazard taxonomy</a> and
-        <a href="../../data/schemas/hazard-report.schema.json"> report schema</a>.
-      </p>
+      <p><strong>SMS intake foundation installed; public number pending configuration.</strong></p>
+      <p>Use web reporting in this app now, or configure Twilio webhooks to activate SMS intake.</p>
     </main>
   );
 }
