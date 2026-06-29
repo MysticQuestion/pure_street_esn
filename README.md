@@ -128,3 +128,5 @@ Contributions are welcome! Please read `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, 
 ## License
 
 This project is licensed under the terms of the MIT License.  See `LICENSE` for details.
+## Twilio integration
+See `docs/TWILIO_INTEGRATION.md` for SMS/MMS webhook foundation setup.
