@@ -15,7 +15,7 @@ STREETS Academy is free civic education for the people who actually meet that sy
 
 Enroll in WR101. Sixty to ninety minutes. Pause on any module. Pass the 98th Avenue simulation at 80/100 and a two-year OaklandSTREETS Waste & Recycling Literacy Certificate — public verification number, not a City credential — is yours to print and share.
 
-Closing line used on the academy landing: *The street does not wait for a perfect system. It waits for people who know the carts.*
+Closing band on the academy landing: **Sign in and start WR101.** Body: Google or X creates the seat. Twelve modules, then the 98th Avenue simulation. Pass at 80/100 and a two-year OaklandSTREETS certificate — with a public verification number — is mailed to that inbox.
 
 Primary CTA: **Enroll in WR101**. Secondary: organizations, certificate verification. Do not invent trained-count or certification-rate statistics.
 
