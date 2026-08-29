@@ -7,6 +7,18 @@ Live: [oaklandstreets.live/academy](https://oaklandstreets.live/academy)
 
 STREETS Academy is independent civic education. It is not a City of Oakland system, not a hauler training program, and does not replace Oakland Recycles, OAK311, Waste Management, California Waste Solutions, or StopWaste. Field observations are not official contamination determinations.
 
+## Landing synopsis (enrollment)
+
+Oakland’s waste system is not a mystery. It is carts, trucks, plants, laws, and people — and it fails in the same places every week when the first sort is wrong.
+
+STREETS Academy is free civic education for the people who actually meet that system: residents, property managers, shop floors, owners, and field trainees. You learn where materials belong under Oakland Recycles rules, who handles the problem, and how to document a street condition without inventing blame.
+
+Enroll in WR101. Sixty to ninety minutes. Pause on any module. Pass the 98th Avenue simulation at 80/100 and a two-year OaklandSTREETS Waste & Recycling Literacy Certificate — public verification number, not a City credential — is yours to print and share.
+
+Closing line used on the academy landing: *The street does not wait for a perfect system. It waits for people who know the carts.*
+
+Primary CTA: **Enroll in WR101**. Secondary: organizations, certificate verification. Do not invent trained-count or certification-rate statistics.
+
 ## Purpose
 
 Participants learn to:
