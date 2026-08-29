@@ -52,10 +52,10 @@ The result is high spending, low accountability, and poor feedback loops—espec
 
 This monorepo contains everything needed to build and operate the Environmental Sentinel Network:
 
-- **apps/** – user‑facing interfaces (reporting, dashboard)
+- **apps/** – user‑facing interfaces (reporting, dashboard, STREETS Academy curriculum snapshot)
 - **services/** – backend systems (API, verifier, scoring, routing, notifications, sensor intelligence)
 - **data/** – schemas, taxonomies, sample data, evaluation notebooks
-- **docs/** – product narrative, architecture, operations, policy, procurement, research
+- **docs/** – product narrative, architecture, operations, policy, procurement, research, academy curriculum
 - **infra/** – local/dev/prod deployment infrastructure
 - **integrations/** – connectors for GIS, messaging, sensors, city systems
 - **scripts/** – operational tools (data import/export, backfill, snapshot generation)
@@ -114,6 +114,7 @@ This repository is under active development.  The initial focus is **ESN‑Lite*
 - scoring
 - dashboard exports
 - operational response workflows
+- STREETS Academy WR101 (Oakland waste literacy) — live at [oaklandstreets.live/academy](https://oaklandstreets.live/academy); curriculum in `docs/08-academy/` and source snapshot in `apps/academy/`
 
 See `ROADMAP.md`, `docs/01-architecture/system-architecture.md`, and `docs/03-data-and-models/scoring-spec.md` for details.
 
