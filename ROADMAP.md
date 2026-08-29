@@ -17,6 +17,7 @@ This document outlines the planned stages of development for the Environmental S
 - Build minimal dashboard: report queue, corridor heat map, and export (PDF/CSV)
 - Develop basic mobile/web client for citizen and crew reporting (Expo/Next.js)
 - Prepare pilot data import from Oakland 311 datasets
+- STREETS Academy WR101 (Oakland waste literacy) is published at [oaklandstreets.live/academy](https://oaklandstreets.live/academy). Curriculum: `docs/08-academy/`. Implementation snapshot: `apps/academy/`. Independent civic education; not a City credential.
 
 ## Phase 2 – ESN v1 (3–6 months)
 
